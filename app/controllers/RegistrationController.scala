@@ -1,6 +1,8 @@
 package controllers
 
 import controllers.ConstructorTestClass.ConstructorTestCaseClass
+import controllers.util.HttpHelper
+import models.Response.{Farragut, FarragutResponse}
 import play.api.mvc.{Action, Controller}
 import play.api._
 
@@ -10,11 +12,9 @@ import play.api._
 object RegistrationController extends Controller {
 
   def syncpointdetails = Action {
-
-    val test =  JacksonWrapper
-    val test1 = test.deserialize[ConstructorTestCaseClass]("""{"intValue":1,"stringValue":"foo"}""")
-    println(test1.stringValue)
-    val test2 = test.serialize(test1)
-    Ok(test2)
+    val far = new Farragut("123","456")
+    val test  = new FarragutResponse("200" ,"success", far);
+   // Ok(JacksonWrapper.serialize((test)))
+    HttpHelper.Ok("success" , "123", "test")
   }
 }

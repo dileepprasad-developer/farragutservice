@@ -2,7 +2,7 @@
  * Created by Karthika on 4/8/2015.
  */
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.{JsonIgnoreProperties, JsonIgnore, JsonProperty}
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import controllers.JacksonWrapper
@@ -17,18 +17,27 @@ import org.specs2.runner.JUnitRunner
 
   object JSONUtilTest extends App
   {
-    case class ConstructorTestCaseClass(intValue: Int, stringValue: String)
+    //@JsonIgnoreProperties(Array("intValue"))   @JsonProperty("intValue")
+    case class ConstructorTestCaseClass1(  intValue: Int, stringValue: String)
+  //  @Json(Array("testclass"))
+    case class ConstructorTestCaseClass2( intValue: Int , stringValue: String ,testclass : ConstructorTestCaseClass1 )
+
     val test =  JacksonWrapper
-    val test1 = test.deserialize[ConstructorTestCaseClass]("""{"intValue":1,"stringValue":"foo"}""")
+   // val test1 = test.deserialize[ConstructorTestCaseClass1]("""{"intValue":1,"stringValue":"foo"}""")
+    val test1 = test.deserialize[ConstructorTestCaseClass2]("""{"intValue":"1","stringValue":"foo","testclass":{"intValue":"1","stringValue":"foo"}}""")
     println(test1.stringValue)
     val test2 = test.serialize(test1)
-    println(test2)
+    println("test2" + test2)
 
     import collection.mutable.HashMap
     val x = new HashMap[Int,String]()  { override def default(key:Int) = "-" }
     x += (1 -> "b", 2 -> "a", 3 -> "c")
     val test3  = test.serialize(x)
     println(test3)
+
+    val test4 = test.deserialize[ConstructorTestCaseClass2]("""{"intValue":"1","stringValue":"foo"}""")
+    val test5 = test.serialize(test4)
+    println(test5)
 
 
     //should be (ConstructorTestCaseClass(1,"foo"))
